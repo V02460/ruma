@@ -104,6 +104,17 @@ where
     IntOrString::deserialize(de)?.try_into().map_err(D::Error::custom)
 }
 
+/// Take either a string or null and deserialize to a string.
+///
+/// To be used like this:
+/// `#[serde(deserialize_with = "string_or_null_to_string")]`
+pub fn string_or_null_to_string<'de, D>(de: D) -> Result<String, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    Option::<String>::deserialize(de).map(|s| s.unwrap_or("".to_string()))
+}
+
 /// Take a BTreeMap with values of either an integer number or a string and deserialize
 /// those to integer numbers.
 ///
